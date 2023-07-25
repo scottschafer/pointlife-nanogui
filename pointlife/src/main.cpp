@@ -325,9 +325,10 @@ int main(int argc, char** argv) {
       // NanoGUI presents many options for you to utilize at your discretion.
       // See include/nanogui/screen.h for what all of these represent.
       screen = new MainScreen(w, Vector2i(1024, 1024), "ClusterBotz",
-                              /*resizable*/true, /*fullscreen*/false, /*colorBits*/8,
-                              /*alphaBits*/8, /*depthBits*/24, /*stencilBits*/8,
-                              /*nSamples*/0, /*glMajor*/4, /*glMinor*/1);
+                              /*resizable*/true, /*fullscreen*/false);
+//      , /*colorBits*/8,
+//                              /*alphaBits*/8, /*depthBits*/24, /*stencilBits*/8,
+//                              /*nSamples*/0, /*glMajor*/4, /*glMinor*/1);
     } else {
       screen = new MainScreen(w, Vector2i(1200, 1024), "ClusterBotz");
     }
@@ -337,8 +338,8 @@ int main(int argc, char** argv) {
     settingsWindow = new SettingsWindow(screen, w);
     
 
-    screen->setVisible(true);
-    screen->performLayout();
+    screen->set_visible(true);
+    screen->perform_layout();
     
     startSimulationThread();
   

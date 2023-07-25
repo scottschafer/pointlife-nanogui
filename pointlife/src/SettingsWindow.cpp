@@ -17,10 +17,10 @@ std::string to_string(const float v) {
 }
 
 SettingsWindow :: SettingsWindow(Widget *parent, WorldData & data) : world(data), Window(parent, "Settings") {
-  setPosition(Vector2i(15, 80));
-  setLayout(new GroupLayout());
+  set_position(Vector2i(15, 80));
+  set_layout(new GroupLayout());
   Widget *panel = new Widget(this);
-  panel->setLayout(new BoxLayout(Orientation::Vertical, Alignment::Middle, 0, 20));
+  panel->set_layout(new BoxLayout(Orientation::Vertical, Alignment::Middle, 0, 20));
   mainPanel = panel;
 
   SettingsVO * pSettings = (SettingsVO *) world.settingsData.data();
@@ -35,37 +35,37 @@ SettingsWindow :: SettingsWindow(Widget *parent, WorldData & data) : world(data)
   
   // Add a slider and set defaults
   
-  setVisible(true);
+  set_visible(true);
   //performLayout();
   
 }
 
 void SettingsWindow :: createParamUI(std::string label, float minVal, float maxVal, float * val) {
   Widget *panel = new Widget(mainPanel);
-  panel->setLayout(new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 20));
+  panel->set_layout(new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 20));
 
   TextBox *labelTextBox = new TextBox(panel);
-  labelTextBox->setFixedSize(Vector2i(120, 25));
-  labelTextBox->setValue(label);
+  labelTextBox->set_size(Vector2i(120, 25));
+  labelTextBox->set_value(label);
 
   Slider *slider = new Slider(panel);
-  slider->setFixedWidth(80);
-  slider->setRange(pair<float, float>(minVal, maxVal));
+  slider->set_fixed_width(80);
+  slider->set_range(pair<float, float>(minVal, maxVal));
   
-  slider->setValue(*val);
+  slider->set_value(*val);
   
   // Add a textbox and set defaults */
   TextBox *textBox = new TextBox(panel);
-  textBox->setFixedSize(Vector2i(60, 25));
-  textBox->setValue(::to_string(*val));
+  textBox->set_fixed_size(Vector2i(60, 25));
+  textBox->set_value(::to_string(*val));
   
   // Propagate slider changes to the text box */
   FloatArray * settingsArray = &world.settingsData;
   
-  slider->setCallback([textBox, val, settingsArray](float value) {
+  slider->set_callback([textBox, val, settingsArray](float value) {
     *val = value;
     float displayVal = float(int(value * 100))/100.0f;
-    textBox->setValue(::to_string(value));
+    textBox->set_value(::to_string(value));
     settingsArray->copyToDevice();
   });
 

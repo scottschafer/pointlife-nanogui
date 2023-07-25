@@ -87,7 +87,7 @@ bool MainScreen :: keyboardEvent(int key, int scancode, int action, int modifier
     }
   }
   
-  return Screen::keyboardEvent(key, scancode, action, modifiers);
+//  return Screen::keyboardEvent(key, scancode, action, modifiers);
 }
 
 bool MainScreen :: mouseButtonEvent(const Vector2i &p, int button, bool down, int modifiers) {

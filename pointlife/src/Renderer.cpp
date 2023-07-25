@@ -25,15 +25,15 @@
 using namespace nanogui;
 using namespace std;
 
-nanogui::GLShader mShader;
-Eigen::Vector3f mRotation(nanogui::Vector3f(0.25, 0.5, 0.33));
-
-// static variables
+//nanogui::GLShader mShader;
+//Eigen::Vector3f mRotation(nanogui::Vector3f(0.25, 0.5, 0.33));
+//
+//// static variables
 Renderer * Renderer::_instance = 0;
-static float cameraX = 0, cameraY = 0;
-
-void reshape(int, int);
-void keyboardFunc(unsigned char key, int x, int y);
+//static float cameraX = 0, cameraY = 0;
+//
+//void reshape(int, int);
+//void keyboardFunc(unsigned char key, int x, int y);
 
 static float windowWidth, windowHeight;
 
@@ -48,7 +48,7 @@ RenderLock::~RenderLock() {
 }
 
 
-Renderer :: Renderer(nanogui::Widget *parent, WorldData & worldData) : nanogui::GLCanvas(parent), worldData(worldData) {
+Renderer :: Renderer(nanogui::Widget *parent, WorldData & worldData) : nanogui::Canvas(parent), worldData(worldData) {
   _instance = this;
   glfwSwapInterval(1);
 }
@@ -63,10 +63,10 @@ void Renderer :: init(nanogui::Widget * widget, WorldData & worldData, int windo
   Globals::magnification = float(windowSize) / float(WORLD_DIM);
   
   Renderer * pRenderer = new Renderer(widget, worldData);
-  pRenderer->setBackgroundColor(nanogui::Color(255,0,0,1));
-  pRenderer->setDrawBorder(true);
+  pRenderer->set_background_color(nanogui::Color(255,0,0,1));
+  pRenderer->set_draw_border(true);
   
-  pRenderer->setSize(Vector2i(windowSize, windowSize));
+  pRenderer->set_size(Vector2i(windowSize, windowSize));
 }
 
 void Renderer :: setMagnification(float magnification) {
@@ -74,8 +74,7 @@ void Renderer :: setMagnification(float magnification) {
 }
 
 void Renderer :: setCameraOffset(float worldX, float worldY) {
-  cameraX = worldX;
-  cameraY = worldY;
+  setCameraOffset(worldX, worldY);
 }
 
 
@@ -491,16 +490,16 @@ void Renderer::draw(NVGcontext *ctx) {
  }
  */
 
-void DrawCircle(float cx, float cy, float r, int num_segments) {
-  glBegin(GL_LINE_LOOP);
-  for (int ii = 0; ii < num_segments; ii++)   {
-    float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle
-    float x = r * cos(theta);//calculate the x component
-    float y = r * sin(theta);//calculate the y component
-    glVertex2f(x + cx, y + cy);//output vertex
-  }
-  glEnd();
-}
+//void DrawCircle(float cx, float cy, float r, int num_segments) {
+//  glBegin(GL_LINE_LOOP);
+//  for (int ii = 0; ii < num_segments; ii++)   {
+//    float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle
+//    float x = r * cos(theta);//calculate the x component
+//    float y = r * sin(theta);//calculate the y component
+//    glVertex2f(x + cx, y + cy);//output vertex
+//  }
+//  glEnd();
+//}
 
 void Renderer::determineOffset() {
   //  Globals::offsetX = (WORLD_DIM * Globals::magnification - WORLD_DIM) / 2;
@@ -562,212 +561,212 @@ void Renderer::determineOffset() {
    */
 }
 
-
-void setLineWidth( float w) {
-  if (w == 0) {
-    w = .000000000000000000001;
-  }
-  glLineWidth( w * Globals::magnification);
-  return;
-  
-  GLfloat lineWidth[2];
-  glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, lineWidth);
-  GLfloat minW = lineWidth[1];
-  GLfloat maxW = lineWidth[0] * 100;
-  
-  w *= minW;
-  float v = w * Globals::magnification;
-  
-  
-  v = std::min(std::max(v, minW), maxW);
-  
-  glLineWidth(v);
-}
-
-
+//
+//void setLineWidth( float w) {
+//  if (w == 0) {
+//    w = .000000000000000000001;
+//  }
+//  glLineWidth( w * Globals::magnification);
+//  return;
+//  
+//  GLfloat lineWidth[2];
+//  glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, lineWidth);
+//  GLfloat minW = lineWidth[1];
+//  GLfloat maxW = lineWidth[0] * 100;
+//  
+//  w *= minW;
+//  float v = w * Globals::magnification;
+//  
+//  
+//  v = std::min(std::max(v, minW), maxW);
+//  
+//  glLineWidth(v);
+//}
 
 
 
-void Renderer::drawGL() {
-  
-  
-  if (0) {
-    
-    mShader.bind();
-    
-    Matrix4f mvp;
-    mvp.setIdentity();
-    float fTime = (float)glfwGetTime();
-    mvp.topLeftCorner<3,3>() = Eigen::Matrix3f(Eigen::AngleAxisf(mRotation[0]*fTime, Vector3f::UnitX()) *
-                                               Eigen::AngleAxisf(mRotation[1]*fTime,  Vector3f::UnitY()) *
-                                               Eigen::AngleAxisf(mRotation[2]*fTime, Vector3f::UnitZ())) * 0.25f;
-    
-    mShader.setUniform("modelViewProj", mvp);
-    
-    glEnable(GL_DEPTH_TEST);
-    /* Draw 12 triangles starting at index 0 */
-    mShader.drawIndexed(GL_TRIANGLES, 0, 12);
-    
-    glDisable(GL_DEPTH_TEST);
-  }
-  
-  // Draw a Red 1x1 Square centered at origin
-  glBegin(GL_QUADS);              // Each set of 4 vertices form a quad
-  glColor3f(1.0f, 0.0f, 0.0f); // Red
-  glVertex2f(-100000.0f, -100000.0f);    // x, y
-  glVertex2f( 100000.0f, -100000.0f);
-  glVertex2f( 100000.0f,  100000.0f);
-  glVertex2f(-100000.0f,  100000.0f);
-  glEnd();
-  //glFlush();
-  return;
-  
-  
-  float smooth = 0;//.3f;
-  
-  std::vector<RenderObject> & listObjects = listObjects;
-  
-  /*
-   glEnable( GL_POINT_SMOOTH );
-   glEnable( GL_BLEND );
-   glEnable(GL_SCISSOR_TEST);
-   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-   
-   //glScissor(0, 0, WINDOW_SIZE, WINDOW_SIZE);
-   
-   glClearColor( 0, 0, 0, 1.0f );
-   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-   //glWindowPos2i(-offsetX,-offsetY);
-   //glPixelZoom(Globals::magnification, Globals::magnification);
-   //  glRasterPos2d(0,0);
-   //  glPixelZoom(1,1);
-   
-   // save transformation
-   glPushMatrix();
-   
-   // position rendering
-   */
-  
-  {
-    RenderLock rl;
-    
-    
-    float offsetX = Globals::focusX * Globals::magnification - windowWidth / 2;
-    float offsetY = Globals::focusY * Globals::magnification - windowHeight / 2;
-    
-    lastFocusX = offsetX = lastFocusX * smooth + (1.0f - smooth) * offsetX;
-    lastFocusY = offsetY = lastFocusY * smooth + (1.0f - smooth) * offsetY;
-    
-    glTranslatef(offsetX, offsetY, 0);
-    glScalef(Globals::magnification, Globals::magnification, 1);
-    
-    
-    glColor3f(1.0, 1.0, 1.0);
-    glBegin(GL_LINES);
-    setLineWidth(1);
-    
-    glVertex2f(0, 0);
-    glVertex2f(WORLD_DIM, 0);
-    
-    glVertex2f(WORLD_DIM, 0);
-    glVertex2f(WORLD_DIM, WORLD_DIM);
-    
-    glVertex2f(0, WORLD_DIM);
-    glVertex2f(WORLD_DIM, WORLD_DIM);
-    
-    glVertex2f(0, 0);
-    glVertex2f(0, WORLD_DIM);
-    glEnd();
-    
-    std::vector<RenderObject> listObjects;
-    RenderObject obj;
-    obj.createCircle(obj,  100, 100, 20, ::Color(255,255,255,1), 4, ::Color(255,255,255,1));
-    listObjects.push_back(obj);
-    
-    for (int i = 0; i < listObjects.size(); i++) {
-      RenderObject & obj = listObjects[i];
-      glColor4f(obj.frameColor.r, obj.frameColor.g, obj.frameColor.b, obj.frameColor.a);
-      
-      switch (obj.type) {
-        case RTYPE_CIRCLE:
-          DrawCircle(
-                     obj.circleX,
-                     obj.circleY,
-                     obj.radius,
-                     6);
-          break;
-          
-        case RTYPE_LINE:
-          glBegin(GL_LINES);
-          glVertex2f(obj.points[0].x, obj.points[0].y);
-          glVertex2f(obj.points[1].x, obj.points[1].y);
-          glEnd();
-          break;
-      }
-    }
-  }
-  
-  /*
-   std::vector<Point> connectorLines;
-   
-   for (int i = 0; i < w._cellPosX->size(); i++) {
-   float x = w._cellPosX->get(i);
-   float y = w._cellPosY->get(i);
-   gRenderPoints.push_back(Point(x, y));
-   }
-   
-   
-   for (int i = 0; i < w._connectionToIndices->size(); i++) {
-   int from = w.connectionFromIndices[i];
-   int to = w.connectionToIndices[i];
-   float x1 = w._cellPosX->get(from);
-   float y1 = w._cellPosY->get(from);
-   float x2 = w._cellPosX->get(to);
-   float y2 = w._cellPosY->get(to);
-   
-   connectorLines.push_back(Point(x1, y1));
-   connectorLines.push_back(Point(x2, y2));
-   }
-   
-   
-   glColor4f(1.0, 1.0, 1.0, .25);
-   glBegin(GL_LINES);
-   //setLineWidth(0);// * (pass ? magnification : 1));
-   for (int i = 0; i < connectorLines.size(); i += 2) {
-   
-   /*
-   if (connectorOutside[i/2]) {
-   glColor4f(1, 0, 0, .85);
-   }
-   //        setLineWidth(40);//connectorLineWidth[i/2]);
-   
-   double x1 = connectorLines[i].x * WINDOW_SIZE / WORLD_DIM;;
-   double y1 = connectorLines[i].y * WINDOW_SIZE / WORLD_DIM;;
-   double x2 = connectorLines[i+1].x * WINDOW_SIZE / WORLD_DIM;;
-   double y2 = connectorLines[i+1].y * WINDOW_SIZE / WORLD_DIM;;
-   
-   glVertex2f(x1, y1);
-   glVertex2f(x2, y2);
-   }
-   */
-  
-  // Draw blue text at screen coordinates (100, 120), where (0, 0) is the top-left of the
-  // screen in an 18-point Helvetica font
-  glRasterPos2i(100, 120);
-  glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-  //glutBitmapString(GLUT_BITMAP_HELVETICA_18, "text to render");
-  
-  
-  /*
-   glEnd();
-   glPopMatrix();
-   
-   glFinish();
-   */
-  //glutSwapBuffers();
-  
-  //glutPostRedisplay();
-}
+
+
+//void Renderer::drawGL() {
+//
+//
+//  if (0) {
+//
+//    mShader.bind();
+//
+//    Matrix4f mvp;
+//    mvp.setIdentity();
+//    float fTime = (float)glfwGetTime();
+//    mvp.topLeftCorner<3,3>() = Eigen::Matrix3f(Eigen::AngleAxisf(mRotation[0]*fTime, Vector3f::UnitX()) *
+//                                               Eigen::AngleAxisf(mRotation[1]*fTime,  Vector3f::UnitY()) *
+//                                               Eigen::AngleAxisf(mRotation[2]*fTime, Vector3f::UnitZ())) * 0.25f;
+//
+//    mShader.setUniform("modelViewProj", mvp);
+//
+//    glEnable(GL_DEPTH_TEST);
+//    /* Draw 12 triangles starting at index 0 */
+//    mShader.drawIndexed(GL_TRIANGLES, 0, 12);
+//
+//    glDisable(GL_DEPTH_TEST);
+//  }
+//
+//  // Draw a Red 1x1 Square centered at origin
+//  glBegin(GL_QUADS);              // Each set of 4 vertices form a quad
+//  glColor3f(1.0f, 0.0f, 0.0f); // Red
+//  glVertex2f(-100000.0f, -100000.0f);    // x, y
+//  glVertex2f( 100000.0f, -100000.0f);
+//  glVertex2f( 100000.0f,  100000.0f);
+//  glVertex2f(-100000.0f,  100000.0f);
+//  glEnd();
+//  //glFlush();
+//  return;
+//
+//
+//  float smooth = 0;//.3f;
+//
+//  std::vector<RenderObject> & listObjects = listObjects;
+//
+//  /*
+//   glEnable( GL_POINT_SMOOTH );
+//   glEnable( GL_BLEND );
+//   glEnable(GL_SCISSOR_TEST);
+//   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+//
+//   //glScissor(0, 0, WINDOW_SIZE, WINDOW_SIZE);
+//
+//   glClearColor( 0, 0, 0, 1.0f );
+//   glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+//   //glWindowPos2i(-offsetX,-offsetY);
+//   //glPixelZoom(Globals::magnification, Globals::magnification);
+//   //  glRasterPos2d(0,0);
+//   //  glPixelZoom(1,1);
+//
+//   // save transformation
+//   glPushMatrix();
+//
+//   // position rendering
+//   */
+//
+//  {
+//    RenderLock rl;
+//
+//
+//    float offsetX = Globals::focusX * Globals::magnification - windowWidth / 2;
+//    float offsetY = Globals::focusY * Globals::magnification - windowHeight / 2;
+//
+//    lastFocusX = offsetX = lastFocusX * smooth + (1.0f - smooth) * offsetX;
+//    lastFocusY = offsetY = lastFocusY * smooth + (1.0f - smooth) * offsetY;
+//
+//    glTranslatef(offsetX, offsetY, 0);
+//    glScalef(Globals::magnification, Globals::magnification, 1);
+//
+//
+//    glColor3f(1.0, 1.0, 1.0);
+//    glBegin(GL_LINES);
+//    setLineWidth(1);
+//
+//    glVertex2f(0, 0);
+//    glVertex2f(WORLD_DIM, 0);
+//
+//    glVertex2f(WORLD_DIM, 0);
+//    glVertex2f(WORLD_DIM, WORLD_DIM);
+//
+//    glVertex2f(0, WORLD_DIM);
+//    glVertex2f(WORLD_DIM, WORLD_DIM);
+//
+//    glVertex2f(0, 0);
+//    glVertex2f(0, WORLD_DIM);
+//    glEnd();
+//
+//    std::vector<RenderObject> listObjects;
+//    RenderObject obj;
+//    obj.createCircle(obj,  100, 100, 20, ::Color(255,255,255,1), 4, ::Color(255,255,255,1));
+//    listObjects.push_back(obj);
+//
+//    for (int i = 0; i < listObjects.size(); i++) {
+//      RenderObject & obj = listObjects[i];
+//      glColor4f(obj.frameColor.r, obj.frameColor.g, obj.frameColor.b, obj.frameColor.a);
+//
+//      switch (obj.type) {
+//        case RTYPE_CIRCLE:
+//          DrawCircle(
+//                     obj.circleX,
+//                     obj.circleY,
+//                     obj.radius,
+//                     6);
+//          break;
+//
+//        case RTYPE_LINE:
+//          glBegin(GL_LINES);
+//          glVertex2f(obj.points[0].x, obj.points[0].y);
+//          glVertex2f(obj.points[1].x, obj.points[1].y);
+//          glEnd();
+//          break;
+//      }
+//    }
+//  }
+//
+//  /*
+//   std::vector<Point> connectorLines;
+//
+//   for (int i = 0; i < w._cellPosX->size(); i++) {
+//   float x = w._cellPosX->get(i);
+//   float y = w._cellPosY->get(i);
+//   gRenderPoints.push_back(Point(x, y));
+//   }
+//
+//
+//   for (int i = 0; i < w._connectionToIndices->size(); i++) {
+//   int from = w.connectionFromIndices[i];
+//   int to = w.connectionToIndices[i];
+//   float x1 = w._cellPosX->get(from);
+//   float y1 = w._cellPosY->get(from);
+//   float x2 = w._cellPosX->get(to);
+//   float y2 = w._cellPosY->get(to);
+//
+//   connectorLines.push_back(Point(x1, y1));
+//   connectorLines.push_back(Point(x2, y2));
+//   }
+//
+//
+//   glColor4f(1.0, 1.0, 1.0, .25);
+//   glBegin(GL_LINES);
+//   //setLineWidth(0);// * (pass ? magnification : 1));
+//   for (int i = 0; i < connectorLines.size(); i += 2) {
+//
+//   /*
+//   if (connectorOutside[i/2]) {
+//   glColor4f(1, 0, 0, .85);
+//   }
+//   //        setLineWidth(40);//connectorLineWidth[i/2]);
+//
+//   double x1 = connectorLines[i].x * WINDOW_SIZE / WORLD_DIM;;
+//   double y1 = connectorLines[i].y * WINDOW_SIZE / WORLD_DIM;;
+//   double x2 = connectorLines[i+1].x * WINDOW_SIZE / WORLD_DIM;;
+//   double y2 = connectorLines[i+1].y * WINDOW_SIZE / WORLD_DIM;;
+//
+//   glVertex2f(x1, y1);
+//   glVertex2f(x2, y2);
+//   }
+//   */
+//
+//  // Draw blue text at screen coordinates (100, 120), where (0, 0) is the top-left of the
+//  // screen in an 18-point Helvetica font
+//  glRasterPos2i(100, 120);
+//  glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+//  //glutBitmapString(GLUT_BITMAP_HELVETICA_18, "text to render");
+//
+//
+//  /*
+//   glEnd();
+//   glPopMatrix();
+//
+//   glFinish();
+//   */
+//  //glutSwapBuffers();
+//  
+//  //glutPostRedisplay();
+//}
 
 
 

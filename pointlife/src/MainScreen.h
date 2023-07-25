@@ -15,7 +15,7 @@
 #include <nanogui/nanogui.h>
 #include "Globals.h"
 #include "WorldData.h"
-
+#include <GLFW/glfw3.h>
 
 using namespace nanogui;
 
@@ -25,14 +25,30 @@ class MainScreen : public Screen {
   
   public:
     MainScreen(WorldData & w, const Vector2i &size, const std::string &caption,
-           bool resizable = true, bool fullscreen = false, int colorBits = 8,
-           int alphaBits = 8, int depthBits = 24, int stencilBits = 8,
-           int nSamples = 0,
-           unsigned int glMajor = 3, unsigned int glMinor = 3)
+           bool resizable = true, bool fullscreen = false)
   
-           : Screen(size, caption, resizable, fullscreen, colorBits, alphaBits,
-           depthBits, stencilBits, nSamples, glMajor, glMinor), w(w) {
-            setBackground(nanogui::Color(0,0,0,255));
+           : Screen(
+                    size,
+                    caption,
+                    resizable,
+                    fullscreen,
+                    true,
+                    true), w(w) {
+             
+             
+//             Screen(
+//                 const Vector2i &size,
+//                 const std::string &caption = "Unnamed",
+//                 bool resizable = true,
+//                 bool fullscreen = false,
+//                 bool depth_buffer = true,
+//                 bool stencil_buffer = true,
+//                 bool float_buffer = false,
+//                 unsigned int gl_major = 3,
+//                 unsigned int gl_minor = 2
+//             );
+
+            set_background(nanogui::Color(0,0,0,255));
            }
   
   virtual bool keyboardEvent(int key, int scancode, int action, int modifiers);  

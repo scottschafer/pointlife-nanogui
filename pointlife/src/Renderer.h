@@ -11,7 +11,7 @@
 
 
 #include <nanogui/opengl.h>
-#include <nanogui/glutil.h>
+//#include <nanogui/glutil.h>
 #include <nanogui/screen.h>
 #include <nanogui/window.h>
 #include <nanogui/layout.h>
@@ -22,7 +22,7 @@
 #include <nanogui/popupbutton.h>
 #include <nanogui/combobox.h>
 #include <nanogui/progressbar.h>
-#include <nanogui/entypo.h>
+//#include <nanogui/entypo.h>
 #include <nanogui/messagedialog.h>
 #include <nanogui/textbox.h>
 #include <nanogui/slider.h>
@@ -32,7 +32,7 @@
 #include <nanogui/colorwheel.h>
 #include <nanogui/graph.h>
 #include <nanogui/tabwidget.h>
-#include <nanogui/glcanvas.h>
+//#include <nanogui/canvas.h>
 #include <vector>
 #include "Point.h"
 #include "Color.h"
@@ -94,7 +94,7 @@ public:
 
 };
 
-class Renderer : public nanogui::GLCanvas{
+class Renderer : public nanogui::Canvas{
 private:
   static Renderer * _instance;
   WorldData & worldData;
@@ -131,7 +131,7 @@ public:
   }
 
   virtual void draw(NVGcontext *ctx);
-  virtual void drawGL();
+//  virtual void drawGL();
   
 private:
   //static void display(void);
